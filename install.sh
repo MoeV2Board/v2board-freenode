@@ -11,7 +11,9 @@ echo "
 +----------------------------------------------------------------------
 "
 while [ "$site_directory" == null ] ; do
-    read -p "Please enter your site directory:" site_directory
+    read -p "Please enter your site directory": site_directory
 done
 
-echo "Your site directory is: $site_directory"
+echo -e "Your site directory is: $site_directory"
+
+exit 0
