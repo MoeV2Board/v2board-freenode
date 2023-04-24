@@ -10,10 +10,6 @@ echo "
 | The FreeNode file in /resources/free.json and the FreeNode flag=free
 +----------------------------------------------------------------------
 "
-while [ "$site_directory" == null ] ; do
-    read -p "Please enter your site directory": site_directory
-done
-
-echo -e "Your site directory is: $site_directory"
-
+read -p "Please enter your site directory": sitedirectory
+echo -e "Your site directory is: $sitedirectory"
 exit 0
