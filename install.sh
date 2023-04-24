@@ -10,6 +10,7 @@ echo "
 | The FreeNode file in /resources/free.json and the FreeNode flag=free
 +----------------------------------------------------------------------
 "
-read -p "Please enter your site directory": sitedirectory
-echo -e "Your site directory is: $sitedirectory"
+echo -n "Please enter your site directory:"
+read site_directory
+echo -e "Your site directory is: $site_directory"
 exit 0
