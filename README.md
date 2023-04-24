@@ -2,7 +2,7 @@
 - [简体中文](#V2Board-免费节点)
 
 # V2Board-FreeNode
-- 
+- Provide free node support for V2Board.
 
 ## Install
 Use the script:
