@@ -13,4 +13,10 @@ echo "
 echo -n "Please enter your site directory:"
 read site_directory
 echo -e "Your site directory is: $site_directory"
+echo "Start installing!!!"
+cd $site_directory/app/Http/Controllers/Client/Protocols && wget https://raw.githubusercontent.com/MoeV2Board/v2board-freenode/master/Free.php
+cd $site_directory/resources && wget https://raw.githubusercontent.com/MoeV2Board/v2board-freenode/master/free_example.json && cd free_example.json free.json
+echo "congratulations 🎉！ Installation successful!"
+echo "You can use the 'Subscription Link&flag=free' to view software compatibility and import the 'Subscription Link&flag=free&client=Software Information' to the software for free subscriptions."
+echo "The free node configuration file is located in '/resources/free.json', you can refer to '/resources/free_example.json ', delete unnecessary comments and add node information in the format as needed."
 exit 0
