@@ -1,0 +1,45 @@
+// Please remove the comments before using them.
+[
+    {
+        "id":0, // Node sorting
+        "type":"shadowsocks", // Shadowsocks
+        "name":"服务器名称", // Server Name Tag
+        "cipher":"chacha20-ietf-poly1305", // Server Cipher. Supported 'aes-128-gcm','aes-192-gcm','aes-256-gcm','chacha20-ietf-poly1305','2022-blake3-aes-128-gcm','2022-blake3-aes-256-gcm'.
+        "created_at":"", // Only cipher '2022-blake3-aes-128-gcm','2022-blake3-aes-256-gcm'.
+        "host":"1.1.1.1", // Server Hostname
+        "port":"443", // Server port
+        "password":"123456" // Server Password
+    },
+    {
+        "id":0, // Node sorting
+        "type":"vmess", // Vmess(V2ray)
+        "name":"服务器名称", // Server Name Tag
+        "cipher":"chacha20-ietf-poly1305", // Server Cipher. Only supported 'chacha20-ietf-poly1305'.
+        "host":"1.1.1.1", // Server Hostname
+        "port":"443", // Server port
+        "password":"123456", // Server Password
+        "tls":true, // tls true/false
+        "tlsSettings":{ // tls Settings
+            "allowInsecure":true, // Allow Insecure true/false
+            "serverName":"" // Tls Server Name
+        },
+        "network":"ws", // Network type. Supported 'tcp','ws','grpc'.
+        "networkSettings":{ // Network Settings. Only Supported 'ws','grpc'.
+            "path":"/", // Path Settings. Only Supported 'ws'.
+            "headers":{ // headers Settings. Only Supported 'ws'.
+                "Host":"" // headers_Host Settings. Only Supported 'ws'.
+            },
+            "serviceName":"" // serviceName Settings. Only Supported 'grpc'.
+        }
+    },
+    {
+        "id":0, // Node sorting
+        "type":"trojan", // Trojan
+        "name":"服务器名称", // Server Name Tag
+        "host":"1.1.1.1", // Server Hostname
+        "port":"443", // Server port
+        "password":"123456", // Server Password
+        "server_name":"1.cn", // SNI Server Name
+        "allow_insecure":"true" // Allow Insecure true/false
+    }
+]
