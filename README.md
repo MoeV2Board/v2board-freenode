@@ -13,6 +13,13 @@ When prompted with 'Please enter your site directory', please enter your website
 
 The free node is prompted by accessing the "subscription link&flag=free", and can generally subscribe to the client based on the prompt. For example, Clash is "subscription link&flag=free&client=clash".
 
+## Update
+Use the script:
+```
+wget https://raw.githubusercontent.com/MoeV2Board/v2board-freenode/master/update.sh && sh install.sh
+```
+When the upder prompts "Please enter your site directory", simply enter your site root directory.
+
 ## Uninstall
 Use the script:
 ```
@@ -33,6 +40,13 @@ wget https://raw.githubusercontent.com/MoeV2Board/v2board-freenode/master/instal
 当提示：“Please enter your site directory”的时候，请输入您的网站根目录，例如：“/www/wwwroot/v2board”，然后，我们的脚本将会自动下载并将程序安装至您的V2Board中，您只需要修改“/resources/free.json”添加您的节点信息即可。
 
 免费节点通过访问“订阅链接&flag=free”得到提示，一般根据提示则可以进行客户端订阅，比如Clash则为“订阅链接&flag=free&client=clash”。
+
+## 升级
+使用脚本：
+```
+wget https://raw.githubusercontent.com/MoeV2Board/v2board-freenode/master/update.sh && sh install.sh
+```
+当升级程序提示“Please enter your site directory”的时候，只需输入站点根目录即可。
 
 ## 卸载
 使用脚本：
