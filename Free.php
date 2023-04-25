@@ -24,7 +24,7 @@ class Free
         @$GET = $_GET['client'];
         switch ($GET){
             default:
-                echo '<meta http-equiv="Content-Type" content="text/html;charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta content="always" name="referrer"><title>软体兼容性|' . config('v2board.app_name', 'V2Board') . ' Free</title>请在网址后加入 &client=识别码 后导入到客户端<br><table border="1x"><tr><td>客户端</td><td>识别码</td></tr><tr><td>Clash</td><td>clash</td></tr><tr><td>Shadowrocket</td><td>shadowrocket</td></tr><tr><td>Surge</td><td>surge</td></tr><tr><td>Quantumult</td><td>Vmess: quantumult-vmess<br>SS: quantumult-ss</td></tr><tr><td>QuantumultX</td><td>quantumult%20x</td></tr><tr><td>Loon</td><td>loon</td></tr><tr><td>Loon Lite</td><td>loon</td></tr><tr><td>Surfboard</td><td>surfboard</td></tr><tr><td>V2rayNG</td><td>v2rayng</td></tr><tr><td>V2rayN</td><td>v2rayn</td></tr><tr><td>Passwall</td><td>passwall</td></tr><tr><td>SSRPlus</td><td>ssrplus</td></tr><tr><td>Shadowsocks</td><td>shadowsocks</td></tr><tr><td>AnXray</td><td>aaxray</td></tr><tr><td>Stash</td><td>stash</td></tr></table>对应客户端和识别码请见上表<br><br>节点信息：<br>';
+                echo '<meta http-equiv="Content-Type" content="text/html;charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta content="always" name="referrer"><title>软体兼容性|' . config('v2board.app_name', 'V2Board') . ' Free</title>请在网址后加入 &client=识别码 后导入到客户端<br><table border="1x"><tr><td>客户端</td><td>识别码</td></tr><tr><td>Clash</td><td>clash</td></tr><tr><td>Shadowrocket</td><td>shadowrocket</td></tr><tr><td>Surge</td><td>surge</td></tr><tr><td>Quantumult</td><td>Vmess: quantumult-vmess<br>SSR: quantumult-ssr<br>SS: quantumult-ss</td></tr><tr><td>QuantumultX</td><td>quantumult%20x</td></tr><tr><td>Loon</td><td>loon</td></tr><tr><td>Loon Lite</td><td>loon</td></tr><tr><td>Surfboard</td><td>surfboard</td></tr><tr><td>V2rayNG</td><td>v2rayng</td></tr><tr><td>V2rayN</td><td>v2rayn</td></tr><tr><td>Passwall</td><td>passwall</td></tr><tr><td>SSRPlus</td><td>ssrplus</td></tr><tr><td>Shadowsocks</td><td>shadowsocks</td></tr><tr><td>AnXray</td><td>aaxray</td></tr><tr><td>Stash</td><td>stash</td></tr></table>对应客户端和识别码请见上表<br><br>节点信息：<br>';
                 foreach ($free as $item) {
                     echo $item['type'].' - '.$item['name'].' ['.$item['host'].':'.$item['port'].']'.'<br>';
                 }
@@ -40,6 +40,9 @@ class Free
                             base64_encode("{$item['cipher']}:{$item['password']}")
                         );
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
+                    }
+                    if ($item['type'] === 'shadowsocksR') {
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $userinfo = base64_encode('auto:' . $item['password'] . '@' . $item['host'] . ':' . $item['port']);
@@ -107,6 +110,9 @@ class Free
                             base64_encode("{$item['cipher']}:{$item['password']}")
                         );
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
+                    }
+                    if ($item['type'] === 'shadowsocksR') {
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $config = [
@@ -176,6 +182,38 @@ class Free
                         $array['port'] = $item['port'];
                         $array['cipher'] = $item['cipher'];
                         $array['password'] = $item['password'];
+                        $array['udp'] = true;
+                        array_push($proxy, $array);
+                        array_push($proxies, $item['name']);
+                    }
+                    if ($item['type'] === 'shadowsocksR'
+                        && in_array($item['cipher'], [
+                            'aes-128-gcm',
+                            'aes-192-gcm',
+                            'aes-256-gcm',
+                            'aes-128-cfb',
+                            'aes-192-cfb',
+                            'aes-256-cfb',
+                            'aes-128-ctr',
+                            'aes-192-ctr',
+                            'rc4-md5',
+                            'chacha20',
+                            'xchacha20',
+                            'chacha20-ietf-poly1305',
+                            'xchacha20-ietf-poly1305'
+                        ])
+                    ) {
+                        $array = [];
+                        $array['name'] = $item['name'];
+                        $array['type'] = 'ssr';
+                        $array['server'] = $item['host'];
+                        $array['port'] = $item['port'];
+                        $array['cipher'] = $item['cipher'];
+                        $array['password'] = $item['password'];
+                        $array['protocol'] = $item['protocol']['type'];
+                        $array['protocol-param'] = $item['protocol']['param'];
+                        $array['obfs'] = $item['obfs']['type'];
+                        $array['obfs-param'] = $item['obfs']['param'];
                         $array['udp'] = true;
                         array_push($proxy, $array);
                         array_push($proxies, $item['name']);
@@ -302,6 +340,38 @@ class Free
                         array_push($proxy, $array);
                         array_push($proxies, $item['name']);
                     }
+                    if ($item['type'] === 'shadowsocksR'
+                        && in_array($item['cipher'], [
+                            'aes-128-gcm',
+                            'aes-192-gcm',
+                            'aes-256-gcm',
+                            'aes-128-cfb',
+                            'aes-192-cfb',
+                            'aes-256-cfb',
+                            'aes-128-ctr',
+                            'aes-192-ctr',
+                            'rc4-md5',
+                            'chacha20',
+                            'xchacha20',
+                            'chacha20-ietf-poly1305',
+                            'xchacha20-ietf-poly1305'
+                        ])
+                    ) {
+                        $array = [];
+                        $array['name'] = $item['name'];
+                        $array['type'] = 'ssr';
+                        $array['server'] = $item['host'];
+                        $array['port'] = $item['port'];
+                        $array['cipher'] = $item['cipher'];
+                        $array['password'] = $item['password'];
+                        $array['protocol'] = $item['protocol']['type'];
+                        $array['protocol-param'] = $item['protocol']['param'];
+                        $array['obfs'] = $item['obfs']['type'];
+                        $array['obfs-param'] = $item['obfs']['param'];
+                        $array['udp'] = true;
+                        array_push($proxy, $array);
+                        array_push($proxies, $item['name']);
+                    }
                     if ($item['type'] === 'vmess') {
                         $array = [];
                         $array['name'] = $item['name'];
@@ -420,6 +490,9 @@ class Free
                             base64_encode("{$item['cipher']}:{$password}")
                         );
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
+                    }
+                    if ($item['type'] === 'shadowsocksR') {
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $userinfo = base64_encode('auto:' . $item['password'] . '@' . $item['host'] . ':' . $item['port']);
@@ -617,6 +690,15 @@ class Free
                 }
                 return base64_encode($uri);
             break;
+            case 'quantumult-ssr':
+                $uri = '';
+                foreach ($free as $item) {
+                    if ($item['type'] === 'shadowsocksR') {
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."&group=".base64_encode(config('v2board.app_name', 'V2Board')." Free")."\r\n");
+                    }
+                }
+                return base64_encode($uri);
+            break;
             case 'quantumult x':
                 $uri = '';
                 foreach ($free as $item) {
@@ -625,6 +707,22 @@ class Free
                             "shadowsocks={$item['host']}:{$item['port']}",
                             "method={$item['cipher']}",
                             "password={$item['password']}",
+                            'fast-open=true',
+                            'udp-relay=true',
+                            "tag={$item['name']}"
+                        ];
+                        $config = array_filter($config);
+                        $uri .= implode(',', $config). "\r\n";
+                    }
+                    if ($item['type'] === 'shadowsocksR') {
+                        $config = [
+                            "shadowsocks={$item['host']}:{$item['port']}",
+                            "method={$item['cipher']}",
+                            "password={$item['password']}",
+                            "ssr-protocol={$item['protocol']['type']}",
+                            "ssr-protocol-param={$item['protocol']['param']}",
+                            "obfs={$item['obfs']['type']}",
+                            "obfs-host={$item['obfs']['param']}",
                             'fast-open=true',
                             'udp-relay=true',
                             "tag={$item['name']}"
@@ -708,6 +806,39 @@ class Free
                             "{$item['port']}",
                             "{$item['cipher']}",
                             "{$item['password']}",
+                            'fast-open=false',
+                            'udp=true'
+                        ];
+                        $config = array_filter($config);
+                        $uri .= implode(',', $config) . "\r\n";
+                    }
+                    if ($item['type'] === 'shadowsocksR'
+                        && in_array($item['cipher'], [
+                            'aes-128-gcm',
+                            'aes-192-gcm',
+                            'aes-256-gcm',
+                            'aes-128-cfb',
+                            'aes-192-cfb',
+                            'aes-256-cfb',
+                            'aes-128-ctr',
+                            'aes-192-ctr',
+                            'rc4-md5',
+                            'chacha20',
+                            'xchacha20',
+                            'chacha20-ietf-poly1305',
+                            'xchacha20-ietf-poly1305'
+                        ])
+                    ) {
+                        $config = [
+                            "{$item['name']}=ShadowsocksR",
+                            "{$item['host']}",
+                            "{$item['port']}",
+                            "{$item['cipher']}",
+                            "{$item['password']}",
+                            "protocol={$item['protocol']['type']}",
+                            "protocol-param={$item['protocol']['param']}",
+                            "obfs={$item['obfs']['type']}",
+                            "obfs-param={$item['obfs']['param']}",
                             'fast-open=false',
                             'udp=true'
                         ];
@@ -1017,6 +1148,9 @@ class Free
                         );
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
                     }
+                    if ($item['type'] === 'shadowsocksR') {
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
+                    }
                     if ($item['type'] === 'vmess') {
                         $config = [
                             "v" => "2",
@@ -1073,6 +1207,9 @@ class Free
                             base64_encode("{$item['cipher']}:{$item['password']}")
                         );
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
+                    }
+                    if ($item['type'] === 'shadowsocksR') {
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $config = [
