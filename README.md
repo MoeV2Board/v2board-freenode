@@ -18,7 +18,7 @@ Use the script:
 ```
 wget https://raw.githubusercontent.com/MoeV2Board/v2board-freenode/master/update.sh && sh install.sh
 ```
-When the upder prompts "Please enter your site directory", simply enter your site root directory.
+When the updater prompts "Please enter your site directory", simply enter your site root directory.
 
 ## Uninstall
 Use the script:
