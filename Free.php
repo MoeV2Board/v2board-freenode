@@ -42,14 +42,30 @@ class Free
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
                     }
                     if ($item['type'] === 'shadowsocksR') {
-                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
+                        $protocol_type = "";
+                        $protocol_param = "";
+                        $obfs_type = "";
+                        $obfs_param = "";
+                        if ($item['protocol']['type']!= null) {
+                            $protocol_type .= "{$item['protocol']['type']}:";
+                            if ($item['protocol']['param']!= null) {
+                                $protocol_param .= "protoparam=".base64_encode("{$item['protocol']['param']}")."&";
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $obfs_type .= "{$item['obfs']['type']}:";
+                            if ($item['obfs']['param']!= null) {
+                                $obfs_param .= "obfsparam=".base64_encode("{$item['obfs']['param']}")."&";
+                            }
+                        }
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $userinfo = base64_encode('auto:' . $item['password'] . '@' . $item['host'] . ':' . $item['port']);
                         $config = [
                             'tfo' => 1,
                             'remark' => $item['name'],
-                            'alterId' => 0
+                            'alterId' => $item['alterId']
                         ];
                         if ($item['tls']) {
                             $config['tls'] = 1;
@@ -112,7 +128,23 @@ class Free
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
                     }
                     if ($item['type'] === 'shadowsocksR') {
-                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
+                        $protocol_type = "";
+                        $protocol_param = "";
+                        $obfs_type = "";
+                        $obfs_param = "";
+                        if ($item['protocol']['type']!= null) {
+                            $protocol_type .= "{$item['protocol']['type']}:";
+                            if ($item['protocol']['param']!= null) {
+                                $protocol_param .= "protoparam=".base64_encode("{$item['protocol']['param']}")."&";
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $obfs_type .= "{$item['obfs']['type']}:";
+                            if ($item['obfs']['param']!= null) {
+                                $obfs_param .= "obfsparam=".base64_encode("{$item['obfs']['param']}")."&";
+                            }
+                        }
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $config = [
@@ -210,10 +242,18 @@ class Free
                         $array['port'] = $item['port'];
                         $array['cipher'] = $item['cipher'];
                         $array['password'] = $item['password'];
-                        $array['protocol'] = $item['protocol']['type'];
-                        $array['protocol-param'] = $item['protocol']['param'];
-                        $array['obfs'] = $item['obfs']['type'];
-                        $array['obfs-param'] = $item['obfs']['param'];
+                        if ($item['protocol']['type']!= null) {
+                            $array['protocol'] = $item['protocol']['type'];
+                            if ($item['protocol']['param']!= null) {
+                                $array['protocol-param'] = $item['protocol']['param'];
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $array['obfs'] = $item['obfs']['type'];
+                            if ($item['obfs']['param']!= null) {
+                                $array['obfs-param'] = $item['obfs']['param'];
+                            }
+                        }
                         $array['udp'] = true;
                         array_push($proxy, $array);
                         array_push($proxies, $item['name']);
@@ -225,7 +265,7 @@ class Free
                         $array['server'] = $item['host'];
                         $array['port'] = $item['port'];
                         $array['uuid'] = $item['password'];
-                        $array['alterId'] = 0;
+                        $array['alterId'] = $item['alterId'];
                         $array['cipher'] = 'auto';
                         $array['udp'] = true;
                         if ($item['tls']) {
@@ -364,10 +404,18 @@ class Free
                         $array['port'] = $item['port'];
                         $array['cipher'] = $item['cipher'];
                         $array['password'] = $item['password'];
-                        $array['protocol'] = $item['protocol']['type'];
-                        $array['protocol-param'] = $item['protocol']['param'];
-                        $array['obfs'] = $item['obfs']['type'];
-                        $array['obfs-param'] = $item['obfs']['param'];
+                        if ($item['protocol']['type']!= null) {
+                            $array['protocol'] = $item['protocol']['type'];
+                            if ($item['protocol']['param']!= null) {
+                                $array['protocol-param'] = $item['protocol']['param'];
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $array['obfs'] = $item['obfs']['type'];
+                            if ($item['obfs']['param']!= null) {
+                                $array['obfs-param'] = $item['obfs']['param'];
+                            }
+                        }
                         $array['udp'] = true;
                         array_push($proxy, $array);
                         array_push($proxies, $item['name']);
@@ -379,7 +427,7 @@ class Free
                         $array['server'] = $item['host'];
                         $array['port'] = $item['port'];
                         $array['uuid'] = $item['password'];
-                        $array['alterId'] = 0;
+                        $array['alterId'] = $item['alterId'];
                         $array['cipher'] = 'auto';
                         $array['udp'] = true;
 
@@ -492,14 +540,30 @@ class Free
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
                     }
                     if ($item['type'] === 'shadowsocksR') {
-                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
+                        $protocol_type = "";
+                        $protocol_param = "";
+                        $obfs_type = "";
+                        $obfs_param = "";
+                        if ($item['protocol']['type']!= null) {
+                            $protocol_type .= "{$item['protocol']['type']}:";
+                            if ($item['protocol']['param']!= null) {
+                                $protocol_param .= "protoparam=".base64_encode("{$item['protocol']['param']}")."&";
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $obfs_type .= "{$item['obfs']['type']}:";
+                            if ($item['obfs']['param']!= null) {
+                                $obfs_param .= "obfsparam=".base64_encode("{$item['obfs']['param']}")."&";
+                            }
+                        }
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $userinfo = base64_encode('auto:' . $item['password'] . '@' . $item['host'] . ':' . $item['port']);
                         $config = [
                             'tfo' => 1,
                             'remark' => $item['name'],
-                            'alterId' => 0
+                            'alterId' => $item['alterId']
                         ];
                         if ($item['tls']) {
                             $config['tls'] = 1;
@@ -661,7 +725,15 @@ class Free
                 foreach ($free as $item) {
                     if ($item['type'] === 'vmess') {
                         $str = '';
-                        $str .= $item['name'] . '= vmess, ' . $item['host'] . ', ' . $item['port'] . ', chacha20-ietf-poly1305, "' . $item['password'] . '", over-tls=' . ($item['tls'] ? "true" : "false") . ', tls-host=' . $item['tlsSettings']['serverName'] . ', certificate=0, group=' . config('v2board.app_name', 'V2Board')." Free";
+                        $tlsSettings_host = "";
+                        if ($item['tls']) {
+                            if ($item['tlsSettings']) {
+                                $tlsSettings = $item['tlsSettings'];
+                                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                                    $tlsSettings_host .= ', tls-host=' . $tlsSettings['serverName'];
+                            }
+                        }
+                        $str .= $item['name'] . '= vmess, ' . $item['host'] . ', ' . $item['port'] . ', chacha20-ietf-poly1305, "' . $item['password'] . '", over-tls=' . ($item['tls'] ? "true" : "false") . $tlsSettings_host . ', certificate=0, group=' . config('v2board.app_name', 'V2Board')." Free";
                         if ($item['network'] === 'ws') {
                             $str .= ', obfs=ws';
                             if ($item['networkSettings']) {
@@ -694,7 +766,23 @@ class Free
                 $uri = '';
                 foreach ($free as $item) {
                     if ($item['type'] === 'shadowsocksR') {
-                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."&group=".base64_encode(config('v2board.app_name', 'V2Board')." Free")."\r\n");
+                        $protocol_type = "";
+                        $protocol_param = "";
+                        $obfs_type = "";
+                        $obfs_param = "";
+                        if ($item['protocol']['type']!= null) {
+                            $protocol_type .= "{$item['protocol']['type']}:";
+                            if ($item['protocol']['param']!= null) {
+                                $protocol_param .= "protoparam=".base64_encode("{$item['protocol']['param']}")."&";
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $obfs_type .= "{$item['obfs']['type']}:";
+                            if ($item['obfs']['param']!= null) {
+                                $obfs_param .= "obfsparam=".base64_encode("{$item['obfs']['param']}")."&";
+                            }
+                        }
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."&group=".base64_encode(config('v2board.app_name', 'V2Board')." Free")."\r\n");
                     }
                 }
                 return base64_encode($uri);
@@ -715,14 +803,30 @@ class Free
                         $uri .= implode(',', $config). "\r\n";
                     }
                     if ($item['type'] === 'shadowsocksR') {
+                        $protocol_type = "";
+                        $protocol_param = "";
+                        $obfs_type = "";
+                        $obfs_param = "";
+                        if ($item['protocol']['type']!= null) {
+                            $protocol_type .= "ssr-protocol={$item['protocol']['type']}";
+                            if ($item['protocol']['param']!= null) {
+                                $protocol_param .= "ssr-protocol-param={$item['protocol']['param']}";
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $obfs_type .= "obfs={$item['obfs']['type']}";
+                            if ($item['obfs']['param']!= null) {
+                                $obfs_param .= "obfs-host={$item['obfs']['param']}";
+                            }
+                        }
                         $config = [
                             "shadowsocks={$item['host']}:{$item['port']}",
                             "method={$item['cipher']}",
                             "password={$item['password']}",
-                            "ssr-protocol={$item['protocol']['type']}",
-                            "ssr-protocol-param={$item['protocol']['param']}",
-                            "obfs={$item['obfs']['type']}",
-                            "obfs-host={$item['obfs']['param']}",
+                            $protocol_type,
+                            $protocol_param,
+                            $obfs_type,
+                            $obfs_param,
                             'fast-open=true',
                             'udp-relay=true',
                             "tag={$item['name']}"
@@ -829,16 +933,32 @@ class Free
                             'xchacha20-ietf-poly1305'
                         ])
                     ) {
+                        $protocol_type = "";
+                        $protocol_param = "";
+                        $obfs_type = "";
+                        $obfs_param = "";
+                        if ($item['protocol']['type']!= null) {
+                            $protocol_type .= "protocol={$item['protocol']['type']}";
+                            if ($item['protocol']['param']!= null) {
+                                $protocol_param .= "protocol-param={$item['protocol']['param']}";
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $obfs_type .= "obfs={$item['obfs']['type']}";
+                            if ($item['obfs']['param']!= null) {
+                                $obfs_param .= "obfs-param={$item['obfs']['param']}";
+                            }
+                        }
                         $config = [
                             "{$item['name']}=ShadowsocksR",
                             "{$item['host']}",
                             "{$item['port']}",
                             "{$item['cipher']}",
                             "{$item['password']}",
-                            "protocol={$item['protocol']['type']}",
-                            "protocol-param={$item['protocol']['param']}",
-                            "obfs={$item['obfs']['type']}",
-                            "obfs-param={$item['obfs']['param']}",
+                            $protocol_type,
+                            $protocol_param,
+                            $obfs_type,
+                            $obfs_param,
                             'fast-open=false',
                             'udp=true'
                         ];
@@ -854,7 +974,7 @@ class Free
                             "{$item['password']}",
                             'fast-open=false',
                             'udp=true',
-                            "alterId=0"
+                            "alterId=".$item['alterId']
                         ];
 
                         if ($item['network'] === 'tcp') {
@@ -1030,7 +1150,7 @@ class Free
                             "add" => $item['host'],
                             "port" => (string)$item['port'],
                             "id" => $item['password'],
-                            "aid" => '0',
+                            "aid" => $item['alterId'],
                             "net" => $item['network'],
                             "type" => "none",
                             "host" => "",
@@ -1098,7 +1218,7 @@ class Free
                             "add" => $item['host'],
                             "port" => (string)$item['port'],
                             "id" => $item['password'],
-                            "aid" => '0',
+                            "aid" => $item['alterId'],
                             "net" => $item['network'],
                             "type" => "none",
                             "host" => "",
@@ -1149,7 +1269,23 @@ class Free
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
                     }
                     if ($item['type'] === 'shadowsocksR') {
-                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
+                        $protocol_type = "";
+                        $protocol_param = "";
+                        $obfs_type = "";
+                        $obfs_param = "";
+                        if ($item['protocol']['type']!= null) {
+                            $protocol_type .= "{$item['protocol']['type']}:";
+                            if ($item['protocol']['param']!= null) {
+                                $protocol_param .= "protoparam=".base64_encode("{$item['protocol']['param']}")."&";
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $obfs_type .= "{$item['obfs']['type']}:";
+                            if ($item['obfs']['param']!= null) {
+                                $obfs_param .= "obfsparam=".base64_encode("{$item['obfs']['param']}")."&";
+                            }
+                        }
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $config = [
@@ -1158,7 +1294,7 @@ class Free
                             "add" => $item['host'],
                             "port" => (string)$item['port'],
                             "id" => $item['password'],
-                            "aid" => '0',
+                            "aid" => $item['alterId'],
                             "net" => $item['network'],
                             "type" => "none",
                             "host" => "",
@@ -1209,7 +1345,23 @@ class Free
                         $uri .= "ss://{$str}@{$item['host']}:{$item['port']}#{$name}\r\n";
                     }
                     if ($item['type'] === 'shadowsocksR') {
-                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:{$item['protocol']['type']}:{$item['cipher']}:{$item['obfs']['type']}:".base64_encode($item['password'])."/?obfsparam=".base64_encode($item['obfs']['param'])."&protoparam=".base64_encode($item['protocol']['param'])."&remarks=".base64_encode($item['name'])."\r\n");
+                        $protocol_type = "";
+                        $protocol_param = "";
+                        $obfs_type = "";
+                        $obfs_param = "";
+                        if ($item['protocol']['type']!= null) {
+                            $protocol_type .= "{$item['protocol']['type']}:";
+                            if ($item['protocol']['param']!= null) {
+                                $protocol_param .= "protoparam=".base64_encode("{$item['protocol']['param']}")."&";
+                            }
+                        }
+                        if ($item['obfs']['type']!= null) {
+                            $obfs_type .= "{$item['obfs']['type']}:";
+                            if ($item['obfs']['param']!= null) {
+                                $obfs_param .= "obfsparam=".base64_encode("{$item['obfs']['param']}")."&";
+                            }
+                        }
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
                         $config = [
@@ -1218,7 +1370,7 @@ class Free
                             "add" => $item['host'],
                             "port" => (string)$item['port'],
                             "id" => $item['password'],
-                            "aid" => '0',
+                            "aid" => $item['alterId'],
                             "net" => $item['network'],
                             "type" => "none",
                             "host" => "",
