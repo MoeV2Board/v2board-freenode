@@ -47,7 +47,8 @@
                 "Host":"" // headers_Host Settings. Only Supported 'ws'.
             },
             "serviceName":"" // serviceName Settings. Only Supported 'grpc'.
-        }
+        },
+        "alterId":0 // Node alterId
     },
     {
         "id":0, // Node sorting
