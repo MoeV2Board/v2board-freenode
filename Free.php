@@ -20,16 +20,37 @@ class Free
     public function handle()
     {
         $user = $this->user;
+        $free_conf = json_decode(file_get_contents("compress.zlib://".base_path().'/resources/free_conf.json'), true);
         $free = json_decode(file_get_contents("compress.zlib://".base_path().'/resources/free.json'), true);
-        @$GET = $_GET['client'];
+        $GET = @$_GET['client'];
+        if ($GET == null){
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Clash') !== false) {
+                header("Location:".Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}&flag=free&client=clash"));
+            } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Shadowrocket') !== false) {
+                header("Location:".Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}&flag=free&client=shadowrocket"));
+            } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Surge') !== false) {
+                header("Location:".Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}&flag=free&client=surge"));
+            } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult%20X') !== false) {
+                header("Location:".Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}&flag=free&client=quantumult%20x"));
+            } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Loon') !== false) {
+                header("Location:".Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}&flag=free&client=loon"));
+            } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Surfboard') !== false) {
+                header("Location:".Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}&flag=free&client=surfboard"));
+            } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Shadowsocks') !== false) {
+                header("Location:".Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}&flag=free&client=shadowsocks"));
+            } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Stash') !== false) {
+                header("Location:".Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}&flag=free&client=stash"));
+            }
+        }
+        $GET = strtolower($GET);
         switch ($GET){
-            default:
+            case 'info':
                 echo '<meta http-equiv="Content-Type" content="text/html;charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta content="always" name="referrer"><title>软体兼容性|' . config('v2board.app_name', 'V2Board') . ' Free</title>请在网址后加入 &client=识别码 后导入到客户端<br><table border="1x"><tr><td>客户端</td><td>识别码</td></tr><tr><td>Clash</td><td>clash</td></tr><tr><td>Shadowrocket</td><td>shadowrocket</td></tr><tr><td>Surge</td><td>surge</td></tr><tr><td>Quantumult</td><td>Vmess: quantumult-vmess<br>SSR: quantumult-ssr<br>SS: quantumult-ss</td></tr><tr><td>QuantumultX</td><td>quantumult%20x</td></tr><tr><td>Loon</td><td>loon</td></tr><tr><td>Loon Lite</td><td>loon</td></tr><tr><td>Surfboard</td><td>surfboard</td></tr><tr><td>V2rayNG</td><td>v2rayng</td></tr><tr><td>V2rayN</td><td>v2rayn</td></tr><tr><td>Passwall</td><td>passwall</td></tr><tr><td>SSRPlus</td><td>ssrplus</td></tr><tr><td>Shadowsocks</td><td>shadowsocks</td></tr><tr><td>AnXray</td><td>aaxray</td></tr><tr><td>Stash</td><td>stash</td></tr></table>对应客户端和识别码请见上表<br><br>节点信息：<br>';
                 foreach ($free as $item) {
                     echo $item['type'].' - '.$item['name'].' ['.$item['host'].':'.$item['port'].']'.'<br>';
                 }
             break;
-            case 'aaxray':
+            default:
                 $uri = '';
                 foreach ($free as $item) {
                     if ($item['type'] === 'shadowsocks') {
