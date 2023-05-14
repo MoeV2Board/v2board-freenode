@@ -46,7 +46,7 @@ class Free
             case 'info':
                 echo '<meta http-equiv="Content-Type" content="text/html;charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta content="always" name="referrer"><title>软体兼容性|' . config('v2board.app_name', 'V2Board') . ' Free</title>请在网址后加入 &client=识别码 后导入到客户端<br><table border="1x"><tr><td>客户端</td><td>识别码</td></tr><tr><td>Clash</td><td>clash</td></tr><tr><td>Shadowrocket</td><td>shadowrocket</td></tr><tr><td>Surge</td><td>surge</td></tr><tr><td>Quantumult</td><td>Vmess: quantumult-vmess<br>SSR: quantumult-ssr<br>SS: quantumult-ss</td></tr><tr><td>QuantumultX</td><td>quantumult%20x</td></tr><tr><td>Loon</td><td>loon</td></tr><tr><td>Loon Lite</td><td>loon</td></tr><tr><td>Surfboard</td><td>surfboard</td></tr><tr><td>V2rayNG</td><td>v2rayng</td></tr><tr><td>V2rayN</td><td>v2rayn</td></tr><tr><td>Passwall</td><td>passwall</td></tr><tr><td>SSRPlus</td><td>ssrplus</td></tr><tr><td>Shadowsocks</td><td>shadowsocks</td></tr><tr><td>AnXray</td><td>aaxray</td></tr><tr><td>Stash</td><td>stash</td></tr></table>对应客户端和识别码请见上表<br><br>节点信息：<br>';
                 foreach ($free as $item) {
-                    echo $item['type'].' - '.$item['name'].' ['.$item['host'].':'.$item['port'].']'.'<br>';
+                    echo $item['type'].' - '.$item['name'].'<br>';
                 }
             break;
             default:
@@ -81,7 +81,7 @@ class Free
                         $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
-                        $userinfo = base64_encode('auto:' . $item['password'] . '@' . $item['host'] . ':' . $item['port']);
+                        $userinfo = base64_encode($item['cipher'] . ':' . $item['password'] . '@' . $item['host'] . ':' . $item['port']);
                         $config = [
                             'tfo' => 1,
                             'remark' => $item['name'],
@@ -168,7 +168,7 @@ class Free
                     }
                     if ($item['type'] === 'vmess') {
                         $config = [
-                            "encryption" => "none",
+                            "encryption" => $item['cipher'],
                             "type" => urlencode($item['network']),
                             "security" => $item['tls'] ? "tls" : "",
                         ];
@@ -286,7 +286,7 @@ class Free
                         $array['port'] = $item['port'];
                         $array['uuid'] = $item['password'];
                         $array['alterId'] = $item['alterId'];
-                        $array['cipher'] = 'auto';
+                        $array['cipher'] = $item['cipher'];
                         $array['udp'] = true;
                         if ($item['tls']) {
                             $array['tls'] = true;
@@ -448,7 +448,7 @@ class Free
                         $array['port'] = $item['port'];
                         $array['uuid'] = $item['password'];
                         $array['alterId'] = $item['alterId'];
-                        $array['cipher'] = 'auto';
+                        $array['cipher'] = $item['cipher'];
                         $array['udp'] = true;
 
                         if ($item['tls']) {
@@ -579,7 +579,7 @@ class Free
                         $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."\r\n");
                     }
                     if ($item['type'] === 'vmess') {
-                        $userinfo = base64_encode('auto:' . $item['password'] . '@' . $item['host'] . ':' . $item['port']);
+                        $userinfo = base64_encode($item['cipher'] . ':' . $item['password'] . '@' . $item['host'] . ':' . $item['port']);
                         $config = [
                             'tfo' => 1,
                             'remark' => $item['name'],
@@ -664,13 +664,18 @@ class Free
                     $proxyGroup .= $item['name'] . ', ';
                     }
                     if ($item['type'] === 'vmess') {
+                        if ($item['alterId'] == 0){
+                            $aead = "vmess-aead=true";
+                        } else {
+                            $aead = "vmess-aead=false";
+                        }
                         // [Proxy]
                         $config = [
                             "{$item['name']}=vmess",
                             "{$item['host']}",
                             "{$item['port']}",
                             "username={$item['password']}",
-                            "vmess-aead=true",
+                            "{$aead}",
                             'tfo=true',
                             'udp-relay=true'
                         ];
@@ -753,7 +758,7 @@ class Free
                                     $tlsSettings_host .= ', tls-host=' . $tlsSettings['serverName'];
                             }
                         }
-                        $str .= $item['name'] . '= vmess, ' . $item['host'] . ', ' . $item['port'] . ', chacha20-ietf-poly1305, "' . $item['password'] . '", over-tls=' . ($item['tls'] ? "true" : "false") . $tlsSettings_host . ', certificate=0, group=' . config('v2board.app_name', 'V2Board')." Free";
+                        $str .= $item['name'] . '= vmess, ' . $item['host'] . ', ' . $item['port'] . ', ' . $item['cipher']. ', "' . $item['password'] . '", over-tls=' . ($item['tls'] ? "true" : "false") . $tlsSettings_host . ', certificate=0, group=' . config('v2board.app_name', 'V2Board')." Free_Vmess";
                         if ($item['network'] === 'ws') {
                             $str .= ', obfs=ws';
                             if ($item['networkSettings']) {
@@ -777,7 +782,7 @@ class Free
                             ['-', '_', ''],
                             base64_encode("{$item['cipher']}:{$item['password']}")
                         );
-                        $uri .= "ss://{$str}@{$item['host']}:{$item['port']}/?group=" . base64_encode(config('v2board.app_name', 'V2Board')) ." Free" . "#{$name}\r\n";
+                        $uri .= "ss://{$str}@{$item['host']}:{$item['port']}/?group=" . base64_encode(config('v2board.app_name', 'V2Board')) ." Free_SS" . "#{$name}\r\n";
                     }
                 }
                 return base64_encode($uri);
@@ -802,7 +807,7 @@ class Free
                                 $obfs_param .= "obfsparam=".base64_encode("{$item['obfs']['param']}")."&";
                             }
                         }
-                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."&group=".base64_encode(config('v2board.app_name', 'V2Board')." Free")."\r\n");
+                        $uri .= "ssr://".base64_encode("{$item['host']}:{$item['port']}:".$protocol_type."{$item['cipher']}:".$obfs_type.base64_encode("{$item['password']}")."/?".$obfs_param.$protocol_param."remarks=".base64_encode("{$item['name']}")."&group=".base64_encode(config('v2board.app_name', 'V2Board')." Free_SSR")."\r\n");
                     }
                 }
                 return base64_encode($uri);
@@ -857,7 +862,7 @@ class Free
                     if ($item['type'] === 'vmess') {
                         $config = [
                             "vmess={$item['host']}:{$item['port']}",
-                            'method=chacha20-poly1305',
+                            "method={$item['cipher']}",
                             "password={$item['password']}",
                             'fast-open=true',
                             'udp-relay=true',
@@ -990,7 +995,7 @@ class Free
                             "{$item['name']}=vmess",
                             "{$item['host']}",
                             "{$item['port']}",
-                            'chacha20-ietf-poly1305',
+                            "{$item['cipher']}",
                             "{$item['password']}",
                             'fast-open=false',
                             'udp=true',
@@ -1074,13 +1079,18 @@ class Free
                         $proxyGroup .= $item['name'] . ', ';
                     }
                     if ($item['type'] === 'vmess') {
+                        if ($item['alterId'] == 0){
+                            $aead = "vmess-aead=true";
+                        } else {
+                            $aead = "vmess-aead=false";
+                        }
                         // [Proxy]
                         $config = [
                             "{$item['name']}=vmess",
                             "{$item['host']}",
                             "{$item['port']}",
                             "username={$item['password']}",
-                            "vmess-aead=true",
+                            "{$aead}",
                             'tfo=true',
                             'udp-relay=true'
                         ];
@@ -1172,7 +1182,7 @@ class Free
                             "id" => $item['password'],
                             "aid" => $item['alterId'],
                             "net" => $item['network'],
-                            "type" => "none",
+                            "type" => $item['cipher'],
                             "host" => "",
                             "path" => "",
                             "tls" => $item['tls'] ? "tls" : "",
@@ -1240,7 +1250,7 @@ class Free
                             "id" => $item['password'],
                             "aid" => $item['alterId'],
                             "net" => $item['network'],
-                            "type" => "none",
+                            "type" => $item['cipher'],
                             "host" => "",
                             "path" => "",
                             "tls" => $item['tls'] ? "tls" : "",
@@ -1316,7 +1326,7 @@ class Free
                             "id" => $item['password'],
                             "aid" => $item['alterId'],
                             "net" => $item['network'],
-                            "type" => "none",
+                            "type" => $item['cipher'],
                             "host" => "",
                             "path" => "",
                             "tls" => $item['tls'] ? "tls" : "",
@@ -1392,7 +1402,7 @@ class Free
                             "id" => $item['password'],
                             "aid" => $item['alterId'],
                             "net" => $item['network'],
-                            "type" => "none",
+                            "type" => $item['cipher'],
                             "host" => "",
                             "path" => "",
                             "tls" => $item['tls'] ? "tls" : "",
@@ -1432,12 +1442,13 @@ class Free
                 $subs = [];
                 $subs['servers'] = [];
 
+                $nodeid = 0;
                 foreach ($free as $item) {
                     if ($item['type'] === 'shadowsocks'
                         && in_array($item['cipher'], ['aes-128-gcm', 'aes-256-gcm', 'aes-192-gcm', 'chacha20-ietf-poly1305'])
                     ) {
                         $config = [
-                            "id" => $item['id'],
+                            "id" => $nodeid,
                             "remarks" => $item['name'],
                             "server" => $item['host'],
                             "server_port" => $item['port'],
@@ -1446,6 +1457,7 @@ class Free
                         ];
                         array_push($configs, $config);
                     }
+                    $nodeid++;
                 }
 
                 $subs['version'] = 1;
