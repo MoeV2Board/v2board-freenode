@@ -26,6 +26,7 @@ Use the script:
 wget https://raw.githubusercontent.com/MoeV2Board/v2board-freenode/master/install.sh && sh uninstall.sh
 ```
 When you plan not to use the free node service, you can execute the uninstallation program to uninstall. When the uninstaller prompts "Please enter your site directory", simply enter your site root directory.
+<hr>
 
 - **简体中文**
 - [English](#V2Board-FreeNode)
