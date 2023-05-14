@@ -20,7 +20,6 @@ class Free
     public function handle()
     {
         $user = $this->user;
-        $free_conf = json_decode(file_get_contents("compress.zlib://".base_path().'/resources/free_conf.json'), true);
         $free = json_decode(file_get_contents("compress.zlib://".base_path().'/resources/free.json'), true);
         $GET = @$_GET['client'];
         if ($GET == null){
