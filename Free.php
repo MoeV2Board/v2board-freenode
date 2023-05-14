@@ -204,6 +204,7 @@ class Free
             break;
             case 'clash':
                 $appName = config('v2board.app_name', 'V2Board')." Free";
+                header("subscription-userinfo: expire={$user['expired_at']}");
                 header('profile-update-interval: 24');
                 header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($appName));
                 header("profile-web-page-url:" . config('v2board.app_url'));
@@ -367,6 +368,7 @@ class Free
             break;
             case 'stash':
                 $appName = config('v2board.app_name', 'V2Board')." Free";
+                header("subscription-userinfo: expire={$user['expired_at']}");
                 header('profile-update-interval: 24');
                 header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($appName));
                 // 暂时使用clash配置文件，后续根据Stash更新情况更新
@@ -538,6 +540,8 @@ class Free
             break;
             case 'shadowrocket':
                 $uri = '';
+                $expiredDate = date('Y-m-d', $user['expired_at']);
+                $uri .= "STATUS=💡Expires:{$expiredDate}\r\n";
                 foreach ($free as $item) {
                     if ($item['type'] === 'shadowsocks') {
                         if ($item['cipher'] === '2022-blake3-aes-128-gcm') {
@@ -742,11 +746,16 @@ class Free
                 $config = str_replace('$subs_domain', $subsDomain, $config);
                 $config = str_replace('$proxies', $proxies, $config);
                 $config = str_replace('$proxy_group', rtrim($proxyGroup, ', '), $config);
+
+                $expireDate = $user['expired_at'] === NULL ? '长期有效' : date('Y-m-d H:i:s', $user['expired_at']);
+                $subscribeInfo = "title={$appName}订阅信息, content=到期时间：{$expireDate}";
+                $config = str_replace('$subscribe_info', $subscribeInfo, $config);
                 
                 return $config;
             break;
             case 'quantumult-vmess':
                 $uri = '';
+                header("subscription-userinfo: expire={$user['expired_at']}");
                 foreach ($free as $item) {
                     if ($item['type'] === 'vmess') {
                         $str = '';
@@ -774,6 +783,7 @@ class Free
             break;
             case 'quantumult-ss':
                 $uri = '';
+                header("subscription-userinfo: expire={$user['expired_at']}");
                 foreach ($free as $item) {
                     if ($item['type'] === 'shadowsocks') {
                         $name = rawurlencode($item['name']);
@@ -789,6 +799,7 @@ class Free
             break;
             case 'quantumult-ssr':
                 $uri = '';
+                header("subscription-userinfo: expire={$user['expired_at']}");
                 foreach ($free as $item) {
                     if ($item['type'] === 'shadowsocksR') {
                         $protocol_type = "";
@@ -814,6 +825,7 @@ class Free
             break;
             case 'quantumult x':
                 $uri = '';
+                header("subscription-userinfo: expire={$user['expired_at']}");
                 foreach ($free as $item) {
                     if ($item['type'] === 'shadowsocks') {
                         $config = [
@@ -919,6 +931,7 @@ class Free
             break;
             case 'loon':
                 $uri = '';
+                header("Subscription-Userinfo: expire={$user['expired_at']}");
 
                 foreach ($free as $item) {
                     if ($item['type'] === 'shadowsocks'
@@ -1157,6 +1170,10 @@ class Free
                 $config = str_replace('$subs_domain', $subsDomain, $config);
                 $config = str_replace('$proxies', $proxies, $config);
                 $config = str_replace('$proxy_group', rtrim($proxyGroup, ', '), $config);
+
+                $expireDate = $user['expired_at'] === NULL ? '长期有效' : date('Y-m-d H:i:s', $user['expired_at']);
+                $subscribeInfo = "title={$appName}订阅信息, content=到期时间：{$expireDate}";
+                $config = str_replace('$subscribe_info', $subscribeInfo, $config);
 
                 return $config;
             break;
