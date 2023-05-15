@@ -760,6 +760,13 @@ class Free
                     if ($item['type'] === 'vmess') {
                         $str = '';
                         $tlsSettings_host = "";
+                        if ($item['cipher'] == 'auto') {
+                            $cipher = 'chacha20-ietf-poly1305';
+                        } elseif($item['cipher'] == 'chacha20-poly1305') {
+                            $cipher = 'chacha20-ietf-poly1305';
+                        }else {
+                            $cipher = $item['cipher'];
+                        }
                         if ($item['tls']) {
                             if ($item['tlsSettings']) {
                                 $tlsSettings = $item['tlsSettings'];
@@ -767,7 +774,7 @@ class Free
                                     $tlsSettings_host .= ', tls-host=' . $tlsSettings['serverName'];
                             }
                         }
-                        $str .= $item['name'] . '= vmess, ' . $item['host'] . ', ' . $item['port'] . ', ' . $item['cipher']. ', "' . $item['password'] . '", over-tls=' . ($item['tls'] ? "true" : "false") . $tlsSettings_host . ', certificate=0, group=' . config('v2board.app_name', 'V2Board')." Free_Vmess";
+                        $str .= $item['name'] . '= vmess, ' . $item['host'] . ', ' . $item['port'] . ', ' . $cipher . ', "' . $item['password'] . '", over-tls=' . ($item['tls'] ? "true" : "false") . $tlsSettings_host . ', certificate=0, group=' . config('v2board.app_name', 'V2Board')." Free_Vmess";
                         if ($item['network'] === 'ws') {
                             $str .= ', obfs=ws';
                             if ($item['networkSettings']) {
@@ -872,9 +879,14 @@ class Free
                         $uri .= implode(',', $config). "\r\n";
                     }
                     if ($item['type'] === 'vmess') {
+                        if ($item['cipher'] == 'auto') {
+                            $cipher = 'chacha20-poly1305';
+                        }else {
+                            $cipher = $item['cipher'];
+                        }
                         $config = [
                             "vmess={$item['host']}:{$item['port']}",
-                            "method={$item['cipher']}",
+                            "method={$cipher}",
                             "password={$item['password']}",
                             'fast-open=true',
                             'udp-relay=true',
