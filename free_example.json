@@ -28,7 +28,7 @@
     {
         "type":"vmess", // Vmess(V2ray)
         "name":"服务器名称", // Server Name Tag
-        "cipher":"chacha20-ietf-poly1305", // Server Cipher. Supported 'none','aes-128-cfb','aes-128-gcm','chacha20-ietf-poly1305'.
+        "cipher":"chacha20-poly1305", // Server Cipher. Supported 'auto','aes-128-gcm','chacha20-poly1305','none'.
         "host":"1.1.1.1", // Server Hostname
         "port":"443", // Server port
         "password":"123456", // Server Password
